@@ -19,62 +19,59 @@
             color: #334155;
             min-height: 100vh;
         }
-        
         .app-bg {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: 
-                radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08), transparent 30%),
-                radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.08), transparent 30%),
+                radial-gradient(circle at 5% 10%, rgba(16, 185, 129, 0.06), transparent 40%),
+                radial-gradient(circle at 95% 90%, rgba(14, 165, 233, 0.08), transparent 40%),
                 #f8fafc;
             z-index: -1;
         }
-
         .glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 20px -5px rgba(148, 163, 184, 0.15);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            box-shadow: 0 4px 20px -8px rgba(148, 163, 184, 0.15);
         }
-
-        .code-badge {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
-            color: #ffffff;
-            font-weight: 700;
+        .card-glass {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(241, 245, 249, 0.8);
+            box-shadow: 0 8px 30px -12px rgba(148, 163, 184, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .price-badge {
-            color: #059669; 
+        .card-glass:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px -8px rgba(14, 165, 233, 0.2);
+            border-color: rgba(14, 165, 233, 0.2);
         }
-
-        #reader { width: 100%; border-radius: 12px; overflow: hidden; border: 3px solid #0ea5e9; box-shadow: 0 0 15px rgba(14, 165, 233, 0.2); }
-        #reader video { border-radius: 10px; }
-
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .code-badge { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #ffffff; font-weight: 700; }
+        .price-badge { color: #059669; }
+        #reader { width: 100%; border-radius: 16px; overflow: hidden; border: 3px solid #0ea5e9; box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); }
+        #reader video { border-radius: 13px; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
         .toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #059669; color: white; padding: 12px 25px; border-radius: 12px;
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            background: #059669; color: white; padding: 14px 30px; border-radius: 14px;
             font-weight: bold; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: none; animation: slideUp 0.3s ease;
         }
         @keyframes slideUp { from { opacity:0; transform: translate(-50%, 20px); } to { opacity:1; transform: translate(-50%, 0); } }
-
         select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: left 0.75rem center;
-            background-size: 1.1em;
+            background-repeat: no-repeat; background-position: left 0.75rem center; background-size: 1.1em;
         }
+        .logo-shape {
+            background: linear-gradient(135deg, #0ea5e9, #10b981);
+            box-shadow: 0 8px 20px -5px rgba(14, 165, 233, 0.4);
+            transition: transform 0.2s;
+        }
+        .logo-shape:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -82,33 +79,24 @@
 <div class="app-bg"></div>
 <div id="toast" class="toast"></div>
 
-<!-- الهيدر + السيرش + الفلتر (كلهم مثبتين فوق) -->
+<!-- الهيدر -->
 <div class="sticky top-0 z-40 glass">
     <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-emerald-500 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-sky-500/20">
+            <div id="logoBtn" class="logo-shape w-12 h-12 rounded-2xl flex items-center justify-center text-xl cursor-pointer select-none">
                 <i class="fas fa-cubes text-white"></i>
             </div>
             <div>
                 <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">نيو فيوتشر</h1>
-                <p class="text-xs text-slate-500 font-semibold">New Future - نظام الأصناف الذكي</p>
+                <p class="text-xs text-slate-500 font-semibold tracking-wide">New Future - نظام الأصناف الذكي</p>
             </div>
         </div>
-        
         <div class="flex items-center gap-2 w-full md:w-auto">
-            <label class="cursor-pointer flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 transition-all text-slate-600 text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm">
-                <i class="fas fa-file-excel text-emerald-600"></i>
-                <span class="hidden md:inline">رفع إكسيل</span>
-                <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
-            </label>
-            <button id="btnScan" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-gradient-to-l from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-md shadow-sky-500/20 transition-all">
-                <i class="fas fa-qrcode"></i>
-                <span>اسكن الصنف</span>
+            <button id="btnScan" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-gradient-to-l from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-sky-500/20 transition-all">
+                <i class="fas fa-qrcode"></i> <span>اسكن الصنف</span>
             </button>
         </div>
     </div>
-
-    <!-- صف البحث والفلتر -->
     <div class="container mx-auto px-4 pb-3 flex flex-col md:flex-row gap-3">
         <div class="relative flex-1">
             <input type="text" id="searchInput" placeholder="دور بالكود، الاسم، السعر..." class="w-full bg-white border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all rounded-xl py-3 pr-12 pl-4 text-slate-700 placeholder-slate-400 text-lg outline-none shadow-sm">
@@ -122,9 +110,24 @@
     </div>
 </div>
 
-<!-- واجهة السكانر (مخفية افتراضياً) -->
+<!-- عرض البيع والروابط -->
+<main class="container mx-auto px-4 py-6">
+    <div id="dashboardWidgets" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+    <div class="text-slate-500 text-sm mb-4">عدد الأصناف المعروضة: <span id="resultCount" class="font-bold text-sky-600">0</span></div>
+    <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    
+    <!-- تفاصيل الصنف -->
+    <div id="productModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100">
+            <button id="closeModal" class="absolute top-5 left-5 text-slate-300 hover:text-slate-700 text-2xl transition-colors"><i class="fas fa-times"></i></button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+</main>
+
+<!-- السكانر -->
 <div id="scannerSection" class="hidden container mx-auto px-4 mt-6">
-    <div class="max-w-md mx-auto bg-white rounded-2xl p-4 shadow-lg border border-slate-100">
+    <div class="max-w-md mx-auto bg-white rounded-3xl p-5 shadow-xl border border-slate-100">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-camera text-sky-500"></i> وجه الكاميرا للباركود</h3>
             <button id="btnCloseScan" class="text-red-500 hover:text-red-400 text-xl"><i class="fas fa-times-circle"></i></button>
@@ -133,23 +136,62 @@
     </div>
 </div>
 
-<!-- شبكة المنتجات -->
-<main class="container mx-auto px-4 py-6">
-    <div class="text-slate-500 text-sm mb-4">عدد الأصناف المعروضة: <span id="resultCount" class="font-bold text-sky-600">0</span></div>
+<!-- Admin Login -->
+<div id="adminLoginModal" class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-sm w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100">
+        <button id="closeAdminLogin" class="absolute top-5 left-5 text-slate-300 hover:text-slate-700 text-2xl transition-colors"><i class="fas fa-times"></i></button>
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 mx-auto bg-sky-50 rounded-2xl flex items-center justify-center text-3xl mb-4 text-sky-500">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-800">دخول الداش بورد</h3>
+            <p class="text-slate-500 text-sm mt-1">محتاج كلمة سر عشان تعدل حاجة</p>
+        </div>
+        <input type="password" id="adminPasswordInput" placeholder="اكتب كلمة السر" class="w-full bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 rounded-xl py-3 px-4 text-lg outline-none mb-4 transition-all">
+        <button id="btnAdminLogin" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-sky-500/20">دخول</button>
+    </div>
+</div>
 
-    <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    
-    <!-- تفاصيل الصنف (Modal) -->
-    <div id="productModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white max-w-md w-full rounded-2xl p-6 relative shadow-2xl border border-slate-100">
-            <button id="closeModal" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 text-2xl"><i class="fas fa-times"></i></button>
-            <div id="modalContent"></div>
+<!-- Admin Dashboard -->
+<div id="adminDashboardModal" class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white max-w-lg w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100 my-8">
+        <button id="closeAdminDashboard" class="absolute top-5 left-5 text-slate-300 hover:text-slate-700 text-2xl transition-colors"><i class="fas fa-times"></i></button>
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 mx-auto bg-emerald-50 rounded-2xl flex items-center justify-center text-3xl mb-4 text-emerald-500">
+                <i class="fas fa-tools"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-800">داش بورد التحكم</h3>
+        </div>
+        <div class="mb-6 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+            <h4 class="font-bold text-slate-700 mb-3">تحديث قائمة الأسعار</h4>
+            <label class="cursor-pointer flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-sm transition-all">
+                <i class="fas fa-file-excel"></i> <span>ارفع ملف الإكسيل</span>
+                <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
+            </label>
+        </div>
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+            <h4 class="font-bold text-slate-700">الروابط وعرض البيع</h4>
+            <div>
+                <label class="text-sm text-slate-500 font-semibold">لينك مصنع 1</label>
+                <input type="text" id="link1Input" placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 mt-1 outline-none focus:border-sky-500 transition-all">
+            </div>
+            <div>
+                <label class="text-sm text-slate-500 font-semibold">لينك مصنع 2</label>
+                <input type="text" id="link2Input" placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 mt-1 outline-none focus:border-sky-500 transition-all">
+            </div>
+            <div>
+                <label class="text-sm text-slate-500 font-semibold">نص عرض البيع</label>
+                <textarea id="salesText" rows="3" placeholder="اكتب تفاصيل العرض هنا..." class="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 mt-1 outline-none focus:border-sky-500 transition-all"></textarea>
+            </div>
+            <button id="btnSaveWidgets" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-lg transition-all shadow-md shadow-sky-500/20">حفظ البيانات</button>
         </div>
     </div>
-</main>
+</div>
 
 <script>
-// ===================== البيانات الأساسية (من الإكسيل) =====================
+// الباسورد المشفر (Base64) - الجملة الأصلية: LiNDaa25641##
+const ADMIN_PASSWORD_HASHED = "TGlORGFhMjU2NDEjIw==";
+
 const defaultData = [
     { code: "B770", category: "عبوة بولى ايثلين", name: "عبوة 50 مل أبيض 15 جم ق28", price: "7.00", notes: "عبوة - غطاء - طبة" },
     { code: "B004", category: "عبوة بولى ايثلين", name: "عبوة 100 مل أبيض 20 جم ق 40 بأمان", price: "8.50", notes: "عبوة - غطاء - طبة" },
@@ -243,197 +285,81 @@ const defaultData = [
     { code: "B313", category: "عبوة كواكس", name: "عبوة كواكس 1لتر أبيض 120جم عيار", price: "43.00", notes: "عبوة - غطاء - طبة" },
     { code: "CAN255", category: "جركن كواكس", name: "جركن كواكس 5لتر أبيض 320جم ق60 بأمان C3", price: "200.00", notes: "جركن - غطاء - طبة" },
     { code: "CAN252", category: "جركن كواكس", name: "جركن كواكس 5لتر أبيض 320جم ق60 بأمان C2", price: "200.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN257", category: "جركن كواكس", name: "جركن كواكس 5لتر أبيض 350جم ق60 بأمان C2", price: "210.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN003", category: "جركن بولى ايثلين", name: "جركن 500مل شفاف 70جم ق28", price: "14.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN004", category: "جركن بولى ايثلين", name: "جركن 1لتر شفاف 110جم ق28", price: "25.50", notes: "جركن - غطاء - طبة" },
-    { code: "CAN010", category: "جركن بولى ايثلين", name: "جركن 1لتر أبيض 110جم ق38", price: "25.50", notes: "جركن - غطاء - طبة" },
-    { code: "can398", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 200جم ق46 بأمان وجوان", price: "28.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN319", category: "جركن بولى ايثلين", name: "جركن 5لتر أصفر 235جم ق.ع بأمان", price: "38.50", notes: "جركن - غطاء - طبة" },
-    { code: "CAN392", category: "جركن بولى ايثلين", name: "جركن 5لتر بيج غامق 235جم ق.ع بأمان", price: "38.50", notes: "جركن - غطاء - طبة" },
-    { code: "CAN315", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 250جم ق46 بأمان وجوان", price: "40.50", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN320", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 250جم ق.ع بأمان", price: "40.50", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN463", category: "جركن بولى ايثلين", name: "جركن 5 لتر أبيض 250 جم ق46 بأمان وجوان (مخرز)", price: "30.75", notes: "جركن - غطاء - طبة" },
-    { code: "CAN361", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 280جم ق60 بأمان وجوان C3", price: "42.50", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN344", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 280جم ق60 بأمان C3", price: "42.50", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN067", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 280جم ق60 بأمان C2", price: "42.50", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN312", category: "جركن بولى ايثلين", name: "جركن 5لتر أزرق 300جم ق.ع بأمان ( إزازة )", price: "35.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN029", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 300جم ق60 بأمان C2", price: "47.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN047", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 300جم ق60 بأمان C3", price: "47.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN019", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 300جم ق60 بأمان C1", price: "49.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN083", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 300جم ق46 بأمان وجوان", price: "47.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN059", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 300جم ق.ع بأمان", price: "47.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN023", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 400جم ق60 بأمان C1", price: "62.50", notes: "جركن - غطاء - طبة" },
-    { code: "can070", category: "جركن بولى ايثلين", name: "جركن 5لتر أبيض 400جم ق60 بأمان C2", price: "55.00", notes: "جركن - غطاء - طبة" },
-    { code: "CAN568", category: "جركن بولى ايثلين", name: "جركن 10 لتر أحمر 440 جم ق.ع بأمان جديد", price: "61.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN195", category: "جركن بولى ايثلين", name: "جركن 10لتر أبيض 500جم ق.ع بأمان جديد", price: "74.50", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN103", category: "جركن بولى ايثلين", name: "جركن 10لتر أبيض 550جم ق.ع بأمان", price: "77.00", notes: "جركن - غطاء - طبة بلاستيك او جوان" },
-    { code: "CAN102", category: "جركن بولى ايثلين", name: "جركن 10لتر أبيض 600جم ق.ع بأمان", price: "81.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN108", category: "جركن بولى ايثلين", name: "جركن 16لتر شفاف 700جم ق.ع بأمان", price: "95.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN109", category: "جركن بولى ايثلين", name: "جركن 16لتر أبيض 800جم ق.ع بأمان", price: "106.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN135", category: "جركن بولى ايثلين", name: "جركن 18لتر أصفر 850جم ق.ع بأمان", price: "111.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN142", category: "جركن بولى ايثلين", name: "جركن 25لتر أبيض 1000جم ق.ع بأمان", price: "132.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN138", category: "جركن بولى ايثلين", name: "جركن 18لتر أبيض 1000جم ق.ع بأمان", price: "132.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN110", category: "جركن بولى ايثلين", name: "جركن 16لتر أبيض 1000جم ق.ع بأمان", price: "132.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN244", category: "جركن بولى ايثلين", name: "جركن 16لتر أبيض 1000جم جوان بخطين", price: "132.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN129", category: "جركن بولى ايثلين", name: "جركن 16لتر أبيض 1050جم جوان بخطين", price: "134.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN213", category: "جركن بولى ايثلين", name: "جركن 25 لتر ابيض 1100 جرام", price: "145.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN222", category: "جركن بولى ايثلين", name: "جركن 20لتر أزرق 1100جم جوان جديد", price: "143.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN198", category: "جركن بولى ايثلين", name: "جركن 20لتر أبيض 1100جم جوان جديد", price: "143.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN208", category: "جركن بولى ايثلين", name: "جركن 25لتر شفاف 1100جم جوان جديد", price: "143.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN227", category: "جركن بولى ايثلين", name: "جركن 16لتر أخضر فاتح 1100جم جوان بخطين ( إزازة )", price: "101.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN126", category: "جركن بولى ايثلين", name: "جركن 16لتر أبيض 1100جم جوان بخطين", price: "143.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN161", category: "جركن بولى ايثلين", name: "جركن 30لتر كحلى 1200جم جوان", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN210", category: "جركن بولى ايثلين", name: "جركن 25لتر كحلى 1200جم جوان جديد", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN199", category: "جركن بولى ايثلين", name: "جركن 25لتر شفاف 1200جم جوان جديد", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN150", category: "جركن بولى ايثلين", name: "جركن 25لتر شفاف 1200جم جوان بخطين", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN536", category: "جركن بولى ايثلين", name: "جركن 25لتر أزرق غامق 1200جم جوان جديد ( إزازة )", price: "110.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN192", category: "جركن بولى ايثلين", name: "جركن 25لتر أبيض 1200جم ق.ع بأمان", price: "158.00", notes: "جركن - غطاء - طبة بلاستيك" },
-    { code: "CAN209", category: "جركن بولى ايثلين", name: "جركن 25لتر أبيض 1200جم جوان جديد", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN148", category: "جركن بولى ايثلين", name: "جركن 25لتر أبيض 1200جم جوان بخطين", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN203", category: "جركن بولى ايثلين", name: "جركن 25لتر أزرق 1200جم جوان جديد", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN162", category: "جركن بولى ايثلين", name: "جركن 30لتر أزرق 1200جم جوان", price: "156.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN591", category: "جركن بولى ايثلين", name: "جركن 30 لتر أزرق 1250 جم جوان", price: "158.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN511", category: "جركن بولى ايثلين", name: "جركن 30لتر أزرق 1300جم جوان", price: "167.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN539", category: "جركن بولى ايثلين", name: "جركن 30لتر أزرق 1400جم جوان", price: "178.00", notes: "جركن - غطاء - جوان" },
-    { code: "can538", category: "جركن بولى ايثلين", name: "جركن 25لتر أبيض 1500جم جوان جديد", price: "189.00", notes: "جركن - غطاء - جوان" },
-    { code: "CAN577", category: "جركن بولى ايثلين", name: "جركن 25 لتر شفاف 1700 جم جوان جديد", price: "210.00", notes: "جركن - غطاء - جوان" },
-    { code: "J016", category: "برطمان بولى ايثلين", name: "برطمان 1/4ك بودر أبيض 40جم جديد", price: "15.50", notes: "برطمان - غطاء" },
-    { code: "J017", category: "برطمان بولى ايثلين", name: "برطمان 1/2ك بودر أبيض 60جم جديد", price: "19.50", notes: "برطمان - غطاء" },
-    { code: "J018", category: "برطمان بولى ايثلين", name: "برطمان 1ك بودر أبيض 80جم جديد", price: "22.50", notes: "برطمان - غطاء" },
-    { code: "J022", category: "برطمان بولى ايثلين", name: "برطمان 1ك بودر أبيض 90جم بخطين", price: "30.00", notes: "برطمان - غطاء - طبة" },
-    { code: "j023", category: "برطمان بولى ايثلين", name: "برطمان 2ك بودر أبيض 130جم بخطين", price: "35.00", notes: "برطمان - غطاء - طبة" },
-    { code: "BT103", category: "عبوة PET", name: "عبوة 100مل PET شفاف 15جم ق24", price: "3.50", notes: "عبوة فقط" },
-    { code: "BT010", category: "عبوة PET", name: "عبوة 250مل PET أبيض 30جم ق44 بخطين", price: "11.50", notes: "عبوة + غطاء + طبة" },
-    { code: "BT092", category: "عبوة PET", name: "عبوة 100مل PET أبيض 30جم ق44 معدل بخطين", price: "11.50", notes: "عبوة + غطاء + طبة" },
-    { code: "BT058", category: "عبوة PET", name: "عبوة 1لتر PET أبيض 45جم ق44 بخطين", price: "14.00", notes: "عبوة + غطاء + طبة" },
-    { code: "BT033", category: "عبوة PET", name: "عبوة 500مل PET أبيض 55جم ق44 معدل مسح", price: "15.50", notes: "عبوة + غطاء + طبة" },
-    { code: "BT097", category: "عبوة PET", name: "عبوة 500مل PET أبيض 45جم ق44 معدل بخطين", price: "14.00", notes: "عبوة + غطاء + طبة" },
-    { code: "BT088", category: "عبوة PET", name: "عبوة 250مل PET أبيض 45جم ق44 معدل بخطين", price: "14.00", notes: "عبوة + غطاء + طبة" },
-    { code: "BT110", category: "عبوة PET", name: "عبوة 1لتر PET أبيض 55جم ق44 معدل بخطين", price: "15.50", notes: "عبوة + غطاء + طبة" },
-    { code: "BT060", category: "عبوة PET", name: "عبوة 1لتر PET أبيض 80جم ق44 بخطين", price: "21.75", notes: "عبوة + غطاء + طبة" },
-    { code: "P001", category: "امبول عبوات", name: "أمبول 15جم شفاف ق24", price: "2.80", notes: "امبول تعبئة كيس * كرتونة" },
-    { code: "P049", category: "امبول عبوات", name: "أمبول 15جم أبيض ق24", price: "2.85", notes: "امبول تعبئة كيس * كرتونة" },
-    { code: "C002", category: "غطاء", name: "غطاء ق26 أبيض", price: "1.10", notes: "غطاء + طبة" },
-    { code: "C006", category: "غطاء", name: "غطاء ق28 أبيض", price: "1.40", notes: "غطاء + طبة" },
-    { code: "C015", category: "غطاء", name: "غطاء ق38 أبيض", price: "2.10", notes: "غطاء + طبة" },
-    { code: "C029", category: "غطاء", name: "غطاء ق40 بأمان أبيض", price: "2.30", notes: "غطاء + طبة" },
-    { code: "C032", category: "غطاء", name: "غطاء ق43 أبيض", price: "2.60", notes: "غطاء + طبة" },
-    { code: "C057", category: "غطاء", name: "غطاء عيار أبيض", price: "4.40", notes: "غطاء + طبة" },
-    { code: "C072", category: "غطاء", name: "غطاء ق50 أبيض", price: "3.15", notes: "غطاء + طبة" },
-    { code: "C089", category: "غطاء", name: "غطاء ق60 بأمان أبيض", price: "6.00", notes: "غطاء + طبة" },
-    { code: "C176", category: "غطاء", name: "غطاء ق45 بأمان معدل أبيض", price: "2.75", notes: "غطاء + طبة" },
-    { code: "C203", category: "غطاء", name: "غطاء ق46 بأمان وجوان أبيض", price: "3.75", notes: "غطاء + جوان" },
-    { code: "C221", category: "غطاء", name: "غطاء ق46 بأمان أبيض", price: "4.25", notes: "غطاء + طبة" },
-    { code: "C271", category: "غطاء", name: "غطاء ق46 بجوان وامان جديد أبيض", price: "4.90", notes: "غطاء + جوان + رينج" },
-    { code: "C228", category: "غطاء", name: "غطاء بجوان وأمان أبيض", price: "7.00", notes: "غطاء + جوان" },
-    { code: "C238", category: "غطاء", name: "غطاء ق60 بأمان وجوان أبيض", price: "5.00", notes: "غطاء + جوان" },
-    { code: "C289", category: "غطاء", name: "غطاء ق60 بأمان أبيض جديد", price: "6.25", notes: "غطاء + طبة + رينج" },
-    { code: "C171", category: "غطاء", name: "غطاء ق44 معدل أبيض", price: "2.60", notes: "غطاء + طبة" },
-    { code: "C046", category: "غطاء", name: "غطاء ق44 أبيض", price: "2.60", notes: "غطاء + طبة" },
-    { code: "C113", category: "غطاء", name: "غطاء ق.ع بأمان أبيض", price: "4.60", notes: "غطاء + طبة بلاستيك" },
-    { code: "C259", category: "غطاء", name: "غطاء أبيض ق -ع بأمان وجوان", price: "4.60", notes: "غطاء + جوان" },
-    { code: "C138", category: "غطاء", name: "غطاء بودر كبير أبيض", price: "10.75", notes: "غطاء + طبة" },
-    { code: "C208", category: "غطاء", name: "غطاء بودر جديد أبيض", price: "8.00", notes: "غطاء + طبة" },
-    { code: "R001", category: "رينج", name: "رينج", price: "1.40", notes: "رينج فقط" },
-    { code: "plug002", category: "طبة", name: "طبة جركن ق.ع شفاف", price: "1.40", notes: "طبة فقط" }
+    { code: "CAN257", category: "جركن كواكس", name: "جركن كواكس 5لتر أبيض 350جم ق60 بأمان C2", price: "210.00", notes: "جركن - غطاء - طبة" }
 ];
+let appData = JSON.parse(localStorage.getItem('plData')) || defaultData;
+const defaultWidgets = { link1: "", link2: "", salesText: "" };
+let appWidgets = JSON.parse(localStorage.getItem('plWidgets')) || defaultWidgets;
 
-let appData = defaultData;
 let html5QrCode;
-
-// عناصر الـ DOM
 const grid = document.getElementById('productsGrid');
 const searchInput = document.getElementById('searchInput');
 const categoryFilter = document.getElementById('categoryFilter');
 const resultCount = document.getElementById('resultCount');
-const excelFileInput = document.getElementById('excelFile');
-const btnScan = document.getElementById('btnScan');
-const btnCloseScan = document.getElementById('btnCloseScan');
-const scannerSection = document.getElementById('scannerSection');
-const productModal = document.getElementById('productModal');
-const modalContent = document.getElementById('modalContent');
-const closeModalBtn = document.getElementById('closeModal');
 const toast = document.getElementById('toast');
 
-// ملء قائمة الفلتر بالمجموعات
-function populateCategories() {
-    const categories = [...new Set(appData.map(item => item.category))].sort();
-    categoryFilter.innerHTML = '<option value="all">كل المجموعات</option>';
-    categories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        categoryFilter.appendChild(option);
-    });
-}
+function openModal(id) { const el = document.getElementById(id); el.classList.remove('hidden'); el.classList.add('flex'); }
+function closeModal(id) { const el = document.getElementById(id); el.classList.add('hidden'); el.classList.remove('flex'); }
 
-// فلترة وعرض البيانات
-function filterAndRender() {
-    const query = searchInput.value.trim().toLowerCase();
-    const selectedCategory = categoryFilter.value;
-    
-    let filtered = appData;
-    
-    // فلتر المجموعة
-    if (selectedCategory !== 'all') {
-        filtered = filtered.filter(p => p.category === selectedCategory);
+const logoBtn = document.getElementById('logoBtn');
+let tapCount = 0; let tapTimer;
+logoBtn.addEventListener('click', () => {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 3000); // 3 ثواني لـ 8 ضغطات
+    if (tapCount === 8) {
+        tapCount = 0;
+        openModal('adminLoginModal');
     }
-    
-    // فلتر البحث
-    if (query) {
-        filtered = filtered.filter(p => 
-            p.code.toLowerCase().includes(query) ||
-            p.name.toLowerCase().includes(query) ||
-            p.price.toLowerCase().includes(query) ||
-            p.notes.toLowerCase().includes(query)
-        );
-    }
-    
-    renderProducts(filtered);
-}
+});
 
-// عرض الكروت
-function renderProducts(data) {
-    grid.innerHTML = '';
-    if (data.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400"><i class="fas fa-search-minus text-4xl mb-3"></i><br>مفيش نتائج ياسطا!</div>`;
-        resultCount.textContent = '0';
-        return;
+document.getElementById('closeAdminLogin').addEventListener('click', () => closeModal('adminLoginModal'));
+document.getElementById('btnAdminLogin').addEventListener('click', () => {
+    const pass = document.getElementById('adminPasswordInput').value;
+    if (btoa(pass) === ADMIN_PASSWORD_HASHED) {
+        closeModal('adminLoginModal');
+        openModal('adminDashboardModal');
+        document.getElementById('link1Input').value = appWidgets.link1 || "";
+        document.getElementById('link2Input').value = appWidgets.link2 || "";
+        document.getElementById('salesText').value = appWidgets.salesText || "";
+    } else {
+        showToast('كلمة السر غلط يا صاحبي!', '#ef4444');
     }
-    
-    resultCount.textContent = data.length;
-    data.forEach((p, index) => {
-        const card = document.createElement('div');
-        card.className = 'bg-white border border-slate-100 rounded-2xl p-5 hover:shadow-lg hover:border-sky-200 transition-all duration-300 fade-in cursor-pointer flex flex-col gap-3 shadow-sm';
-        card.style.animationDelay = `${index * 0.02}s`;
-        card.innerHTML = `
-            <div class="flex justify-between items-start">
-                <span class="code-badge text-sm font-mono px-3 py-1 rounded-lg">${p.code}</span>
-                <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">${p.category}</span>
-            </div>
-            <h3 class="text-slate-800 text-lg font-bold leading-snug">${p.name}</h3>
-            <div class="text-slate-500 text-sm flex items-center gap-2">
-                <i class="fas fa-info-circle text-sky-400"></i> ${p.notes}
-            </div>
-            <div class="mt-auto pt-3 border-t border-slate-100 flex justify-between items-center">
-                <span class="text-slate-400 text-sm">السعر</span>
-                <span class="price-badge text-2xl font-black">${p.price} <span class="text-sm font-light">ج.م</span></span>
-            </div>
+});
+
+document.getElementById('closeAdminDashboard').addEventListener('click', () => closeModal('adminDashboardModal'));
+document.getElementById('btnSaveWidgets').addEventListener('click', () => {
+    appWidgets = {
+        link1: document.getElementById('link1Input').value,
+        link2: document.getElementById('link2Input').value,
+        salesText: document.getElementById('salesText').value
+    };
+    localStorage.setItem('plWidgets', JSON.stringify(appWidgets));
+    renderWidgets(); showToast('تم حفظ البيانات بنجاح! 🚀'); closeModal('adminDashboardModal');
+});
+
+function renderWidgets() {
+    const wContainer = document.getElementById('dashboardWidgets');
+    if (appWidgets.link1 || appWidgets.link2 || appWidgets.salesText) {
+        wContainer.classList.remove('hidden');
+        wContainer.innerHTML = `
+            ${appWidgets.salesText ? `
+            <div class="bg-gradient-to-l from-sky-50 to-emerald-50 border border-sky-100 p-5 rounded-3xl flex items-center gap-3">
+                <i class="fas fa-tags text-sky-500 text-2xl"></i>
+                <div class="text-slate-700 font-bold">${appWidgets.salesText}</div>
+            </div>` : ''}
+            ${(appWidgets.link1 || appWidgets.link2) ? `
+            <div class="flex gap-3">
+                ${appWidgets.link1 ? `<a href="${appWidgets.link1}" target="_blank" class="card-glass flex-1 p-4 rounded-2xl flex items-center gap-3"><i class="fas fa-link text-emerald-500 text-xl"></i><span class="font-bold text-slate-700">مصنع 1</span></a>` : ''}
+                ${appWidgets.link2 ? `<a href="${appWidgets.link2}" target="_blank" class="card-glass flex-1 p-4 rounded-2xl flex items-center gap-3"><i class="fas fa-link text-emerald-500 text-xl"></i><span class="font-bold text-slate-700">مصنع 2</span></a>` : ''}
+            </div>` : ''}
         `;
-        card.addEventListener('click', () => showProductModal(p));
-        grid.appendChild(card);
-    });
+    } else { wContainer.classList.add('hidden'); }
 }
 
-// الاستماع لتغييرات البحث والفلتر
-searchInput.addEventListener('input', filterAndRender);
-categoryFilter.addEventListener('change', filterAndRender);
-
-// قراءة ملف الإكسيل
-excelFileInput.addEventListener('change', (e) => {
+document.getElementById('excelFile').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
     const reader = new FileReader();
     reader.onload = (event) => {
         try {
@@ -442,7 +368,6 @@ excelFileInput.addEventListener('change', (e) => {
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-            
             const newData = [];
             for (let i = 1; i < rawData.length; i++) {
                 const row = rawData[i];
@@ -456,118 +381,117 @@ excelFileInput.addEventListener('change', (e) => {
                     });
                 }
             }
-            
             if (newData.length > 0) {
                 appData = newData;
-                populateCategories();
-                filterAndRender();
-                showToast('تم رفع ملف الإكسيل بنجاح! 🚀');
                 localStorage.setItem('plData', JSON.stringify(appData));
+                populateCategories(); filterAndRender(); showToast('تم تحديث الأسعار بنجاح! 🚀');
             }
-        } catch (error) {
-            console.error('Error reading Excel', error);
-            showToast('حصلت مشكلة في قراءة الملف يا صاحبي', '#ef4444');
-        }
+        } catch (error) { showToast('حصلت مشكلة في قراءة الملف', '#ef4444'); }
     };
     reader.readAsArrayBuffer(file);
 });
 
-// عرض تفاصيل الصنف (Modal)
+function populateCategories() {
+    const categories = [...new Set(appData.map(item => item.category))].sort();
+    categoryFilter.innerHTML = '<option value="all">كل المجموعات</option>';
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat; option.textContent = cat;
+        categoryFilter.appendChild(option);
+    });
+}
+
+function filterAndRender() {
+    const query = searchInput.value.trim().toLowerCase();
+    const selectedCategory = categoryFilter.value;
+    let filtered = appData;
+    if (selectedCategory !== 'all') { filtered = filtered.filter(p => p.category === selectedCategory); }
+    if (query) {
+        filtered = filtered.filter(p => 
+            p.code.toLowerCase().includes(query) ||
+            p.name.toLowerCase().includes(query) ||
+            p.price.toLowerCase().includes(query) ||
+            p.notes.toLowerCase().includes(query)
+        );
+    }
+    renderProducts(filtered);
+}
+
+function renderProducts(data) {
+    grid.innerHTML = '';
+    if (data.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400"><i class="fas fa-search-minus text-4xl mb-3"></i><br>مفيش نتائج ياسطا!</div>`;
+        resultCount.textContent = '0'; return;
+    }
+    resultCount.textContent = data.length;
+    data.forEach((p, index) => {
+        const card = document.createElement('div');
+        card.className = 'card-glass rounded-3xl p-5 flex flex-col gap-3 fade-in cursor-pointer';
+        card.style.animationDelay = `${index * 0.03}s`;
+        card.innerHTML = `
+            <div class="flex justify-between items-start">
+                <span class="code-badge text-sm font-mono px-3 py-1 rounded-lg">${p.code}</span>
+                <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">${p.category}</span>
+            </div>
+            <h3 class="text-slate-800 text-lg font-bold leading-snug">${p.name}</h3>
+            <div class="text-slate-500 text-sm flex items-center gap-2"><i class="fas fa-info-circle text-sky-400"></i> ${p.notes}</div>
+            <div class="mt-auto pt-3 border-t border-slate-100 flex justify-between items-center">
+                <span class="text-slate-400 text-sm">السعر</span>
+                <span class="price-badge text-2xl font-black">${p.price} <span class="text-sm font-light">ج.م</span></span>
+            </div>`;
+        card.addEventListener('click', () => showProductModal(p));
+        grid.appendChild(card);
+    });
+}
+
+searchInput.addEventListener('input', filterAndRender);
+categoryFilter.addEventListener('change', filterAndRender);
+
 function showProductModal(p) {
-    modalContent.innerHTML = `
+    document.getElementById('modalContent').innerHTML = `
         <div class="text-center">
-            <div class="w-20 h-20 mx-auto bg-gradient-to-br from-sky-500 to-emerald-500 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg shadow-sky-500/20">
+            <div class="w-20 h-20 mx-auto bg-gradient-to-br from-sky-500 to-emerald-500 rounded-3xl flex items-center justify-center text-3xl mb-4 shadow-lg shadow-sky-500/20">
                 <i class="fas fa-barcode text-white"></i>
             </div>
             <span class="code-badge text-sm font-mono px-4 py-2 rounded-lg">${p.code}</span>
             <h3 class="text-slate-800 text-2xl font-black my-4">${p.name}</h3>
-            <div class="bg-slate-50 p-4 rounded-xl text-right space-y-3 text-sm border border-slate-100">
+            <div class="bg-slate-50 p-4 rounded-2xl text-right space-y-3 text-sm border border-slate-100">
                 <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">المجموعة</span><span class="text-sky-600 font-bold">${p.category}</span></div>
                 <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">الملاحظات</span><span class="text-slate-700">${p.notes}</span></div>
                 <div class="flex justify-between items-center pt-2"><span class="text-slate-500 text-lg">السعر</span><span class="price-badge text-3xl font-black">${p.price} ج.م</span></div>
             </div>
-        </div>
-    `;
-    productModal.classList.remove('hidden');
-    productModal.classList.add('flex');
+        </div>`;
+    openModal('productModal');
 }
 
-closeModalBtn.addEventListener('click', () => {
-    productModal.classList.add('hidden');
-    productModal.classList.remove('flex');
-});
+document.getElementById('closeModal').addEventListener('click', () => closeModal('productModal'));
+document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') closeModal('productModal'); });
 
-productModal.addEventListener('click', (e) => {
-    if (e.target === productModal) {
-        productModal.classList.add('hidden');
-        productModal.classList.remove('flex');
-    }
-});
-
-// ====== السكانر ======
-btnScan.addEventListener('click', () => {
-    scannerSection.classList.remove('hidden');
-    startScanner();
-});
-
-btnCloseScan.addEventListener('click', () => {
-    scannerSection.classList.add('hidden');
-    stopScanner();
-});
+const scannerSection = document.getElementById('scannerSection');
+document.getElementById('btnScan').addEventListener('click', () => { scannerSection.classList.remove('hidden'); startScanner(); });
+document.getElementById('btnCloseScan').addEventListener('click', () => { scannerSection.classList.add('hidden'); stopScanner(); });
 
 function startScanner() {
     html5QrCode = new Html5Qrcode("reader");
     const config = { fps: 10, qrbox: { width: 250, height: 150 } };
-    
     html5QrCode.start({ facingMode: "environment" }, config, 
         (decodedText) => {
-            stopScanner();
-            scannerSection.classList.add('hidden');
-            searchInput.value = decodedText;
-            
+            stopScanner(); scannerSection.classList.add('hidden'); searchInput.value = decodedText;
             const found = appData.find(p => p.code.toLowerCase() === decodedText.toLowerCase());
             if (found) {
-                categoryFilter.value = 'all'; 
-                filterAndRender();
-                showProductModal(found);
-                showToast('تم العثور على الصنف! 🎯');
-            } else {
-                showToast(`مفيش صنف بالكود ده: ${decodedText}`, '#ef4444');
-                filterAndRender();
-            }
-        },
-        (errorMessage) => {
-            // تجاهل الأخطاء أثناء المسح
-        }
-    ).catch(err => {
-        console.error(err);
-        showToast('الكاميرا مش شغالة، تأكد من السماح بالوصول', '#ef4444');
-    });
+                categoryFilter.value = 'all'; filterAndRender(); showProductModal(found); showToast('تم العثور على الصنف! 🎯');
+            } else { showToast(`مفيش صنف بالكود ده: ${decodedText}`, '#ef4444'); filterAndRender(); }
+        }, (errorMessage) => {}
+    ).catch(err => { showToast('الكاميرا مش شغالة', '#ef4444'); });
 }
+function stopScanner() { if (html5QrCode && html5QrCode.isRunning) { html5QrCode.stop().then(() => html5QrCode.clear()).catch(err => console.error(err)); } }
 
-function stopScanner() {
-    if (html5QrCode && html5QrCode.isRunning) {
-        html5QrCode.stop().then(() => {
-            html5QrCode.clear();
-        }).catch(err => console.error(err));
-    }
-}
-
-// Toast Notifications
 function showToast(msg, color = '#059669') {
-    toast.textContent = msg;
-    toast.style.backgroundColor = color;
-    toast.style.display = 'block';
+    toast.textContent = msg; toast.style.backgroundColor = color; toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-// تشغيل أول مرة
-const savedData = localStorage.getItem('plData');
-if (savedData) {
-    appData = JSON.parse(savedData);
-}
-populateCategories();
-filterAndRender();
+populateCategories(); filterAndRender(); renderWidgets();
 </script>
 </body>
 </html>
