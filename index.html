@@ -162,13 +162,25 @@
             </div>
             <h3 class="text-xl font-black text-slate-800">داش بورد التحكم</h3>
         </div>
+
+        <!-- رفع إكسيل وتوليد الكود -->
         <div class="mb-6 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-            <h4 class="font-bold text-slate-700 mb-3">تحديث قائمة الأسعار</h4>
-            <label class="cursor-pointer flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-sm transition-all">
-                <i class="fas fa-file-excel"></i> <span>ارفع ملف الإكسيل</span>
+            <h4 class="font-bold text-slate-700 mb-3">تحديث قائمة الأسعار ونشرها</h4>
+            <label class="cursor-pointer flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-sm transition-all mb-4">
+                <i class="fas fa-file-excel"></i> <span>ارفع ملف الإكسيل الجديد</span>
                 <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
             </label>
+            
+            <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+                <p class="text-slate-400 text-xs mb-3"><i class="fas fa-rocket text-emerald-400"></i> بعد ما ترفع الإكسيل، اضغط على الزرار ده وانسخ الكود، عشان تحطه في GitHub وتظهر الأسعار للناس كلها.</p>
+                <button id="btnExportCode" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 rounded-lg transition-all text-sm">
+                    <i class="fas fa-code"></i> توليد كود التحديث للنشر
+                </button>
+                <textarea id="exportCodeArea" class="hidden w-full h-32 mt-3 bg-slate-900 text-emerald-400 font-mono text-xs p-3 rounded-lg border border-slate-700" readonly></textarea>
+            </div>
         </div>
+
+        <!-- الروابط وعرض البيع -->
         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
             <h4 class="font-bold text-slate-700">الروابط وعرض البيع</h4>
             <div>
@@ -306,7 +318,7 @@ let tapCount = 0; let tapTimer;
 logoBtn.addEventListener('click', () => {
     tapCount++;
     clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => { tapCount = 0; }, 3000); // 3 ثواني لـ 8 ضغطات
+    tapTimer = setTimeout(() => { tapCount = 0; }, 3000);
     if (tapCount === 8) {
         tapCount = 0;
         openModal('adminLoginModal');
@@ -336,6 +348,20 @@ document.getElementById('btnSaveWidgets').addEventListener('click', () => {
     };
     localStorage.setItem('plWidgets', JSON.stringify(appWidgets));
     renderWidgets(); showToast('تم حفظ البيانات بنجاح! 🚀'); closeModal('adminDashboardModal');
+});
+
+// توليد كود التحديث للنشر على GitHub
+document.getElementById('btnExportCode').addEventListener('click', () => {
+    const codeArea = document.getElementById('exportCodeArea');
+    const codeString = `const defaultData = ${JSON.stringify(appData, null, 4)};`;
+    codeArea.value = codeString;
+    codeArea.classList.remove('hidden');
+    codeArea.select();
+    navigator.clipboard.writeText(codeString).then(() => {
+        showToast('اتنسخ الكود يا صاحبي! حطه في GitHub مكان defaultData');
+    }).catch(() => {
+        showToast('انسخ الكود من الصندوق الأسود يدوياً');
+    });
 });
 
 function renderWidgets() {
@@ -384,7 +410,7 @@ document.getElementById('excelFile').addEventListener('change', (e) => {
             if (newData.length > 0) {
                 appData = newData;
                 localStorage.setItem('plData', JSON.stringify(appData));
-                populateCategories(); filterAndRender(); showToast('تم تحديث الأسعار بنجاح! 🚀');
+                populateCategories(); filterAndRender(); showToast('تم رفع الأسعار بنجاح! 🚀');
             }
         } catch (error) { showToast('حصلت مشكلة في قراءة الملف', '#ef4444'); }
     };
