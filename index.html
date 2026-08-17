@@ -72,6 +72,13 @@
             transition: transform 0.2s;
         }
         .logo-shape:active { transform: scale(0.95); }
+        .social-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px -5px rgba(0,0,0,0.1);
+        }
+        .social-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -110,9 +117,23 @@
     </div>
 </div>
 
-<!-- عرض البيع والروابط -->
+<!-- المحتوى الرئيسي -->
 <main class="container mx-auto px-4 py-6">
-    <div id="dashboardWidgets" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+    
+    <!-- ==== بداية روابط السوشيال ميديا (دي بتظهر للناس كلها) ==== -->
+    <!-- إنت بس غير اللينكات اللي جوه علامة التنصيص href="..." -->
+    <div class="flex justify-center items-center gap-4 mb-8">
+        <!-- فيسبوك -->
+        <a href="https://www.facebook.com/share/19Bf4z7wq4/" target="_blank" class="social-btn w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl text-slate-600 hover:bg-blue-600 hover:text-white shadow-sm border border-slate-100">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <!-- واتساب -->
+        <a href="https://wa.me/201144281058" target="_blank" class="social-btn w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl text-slate-600 hover:bg-green-500 hover:text-white shadow-sm border border-slate-100">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+    <!-- ==== نهاية روابط السوشيال ميديا ==== -->
+
     <div class="text-slate-500 text-sm mb-4">عدد الأصناف المعروضة: <span id="resultCount" class="font-bold text-sky-600">0</span></div>
     <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
     
@@ -164,7 +185,7 @@
         </div>
 
         <!-- رفع إكسيل وتوليد الكود -->
-        <div class="mb-6 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
             <h4 class="font-bold text-slate-700 mb-3">تحديث قائمة الأسعار ونشرها</h4>
             <label class="cursor-pointer flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-sm transition-all mb-4">
                 <i class="fas fa-file-excel"></i> <span>ارفع ملف الإكسيل الجديد</span>
@@ -172,7 +193,7 @@
             </label>
             
             <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
-                <p class="text-slate-400 text-xs mb-3"><i class="fas fa-rocket text-emerald-400"></i> بعد ما ترفع الإكسيل، اضغط على الزرار ده وانسخ الكود، عشان تحطه في GitHub وتظهر الأسعار للناس كلها.</p>
+                <p class="text-slate-400 text-xs mb-3"><i class="fas fa-rocket text-emerald-400"></i> بعد ما ترفع الإكسيل، اضغط هنا وانسخ الكود، عشان تحطه في GitHub وتظهر الأسعار للناس كلها.</p>
                 <button id="btnExportCode" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 rounded-lg transition-all text-sm">
                     <i class="fas fa-code"></i> توليد كود التحديث للنشر
                 </button>
@@ -180,23 +201,6 @@
             </div>
         </div>
 
-        <!-- الروابط وعرض البيع -->
-        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
-            <h4 class="font-bold text-slate-700">الروابط وعرض البيع</h4>
-            <div>
-                <label class="text-sm text-slate-500 font-semibold">لينك مصنع 1</label>
-                <input type="text" id="link1Input" placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 mt-1 outline-none focus:border-sky-500 transition-all">
-            </div>
-            <div>
-                <label class="text-sm text-slate-500 font-semibold">لينك مصنع 2</label>
-                <input type="text" id="link2Input" placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 mt-1 outline-none focus:border-sky-500 transition-all">
-            </div>
-            <div>
-                <label class="text-sm text-slate-500 font-semibold">نص عرض البيع</label>
-                <textarea id="salesText" rows="3" placeholder="اكتب تفاصيل العرض هنا..." class="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 mt-1 outline-none focus:border-sky-500 transition-all"></textarea>
-            </div>
-            <button id="btnSaveWidgets" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-lg transition-all shadow-md shadow-sky-500/20">حفظ البيانات</button>
-        </div>
     </div>
 </div>
 
@@ -1502,8 +1506,6 @@ const defaultData = [
     }
 ];
 let appData = JSON.parse(localStorage.getItem('plData')) || defaultData;
-const defaultWidgets = { link1: "", link2: "", salesText: "" };
-let appWidgets = JSON.parse(localStorage.getItem('plWidgets')) || defaultWidgets;
 
 let html5QrCode;
 const grid = document.getElementById('productsGrid');
@@ -1533,24 +1535,12 @@ document.getElementById('btnAdminLogin').addEventListener('click', () => {
     if (btoa(pass) === ADMIN_PASSWORD_HASHED) {
         closeModal('adminLoginModal');
         openModal('adminDashboardModal');
-        document.getElementById('link1Input').value = appWidgets.link1 || "";
-        document.getElementById('link2Input').value = appWidgets.link2 || "";
-        document.getElementById('salesText').value = appWidgets.salesText || "";
     } else {
         showToast('كلمة السر غلط يا صاحبي!', '#ef4444');
     }
 });
 
 document.getElementById('closeAdminDashboard').addEventListener('click', () => closeModal('adminDashboardModal'));
-document.getElementById('btnSaveWidgets').addEventListener('click', () => {
-    appWidgets = {
-        link1: document.getElementById('link1Input').value,
-        link2: document.getElementById('link2Input').value,
-        salesText: document.getElementById('salesText').value
-    };
-    localStorage.setItem('plWidgets', JSON.stringify(appWidgets));
-    renderWidgets(); showToast('تم حفظ البيانات بنجاح! 🚀'); closeModal('adminDashboardModal');
-});
 
 // توليد كود التحديث للنشر على GitHub
 document.getElementById('btnExportCode').addEventListener('click', () => {
@@ -1565,25 +1555,6 @@ document.getElementById('btnExportCode').addEventListener('click', () => {
         showToast('انسخ الكود من الصندوق الأسود يدوياً');
     });
 });
-
-function renderWidgets() {
-    const wContainer = document.getElementById('dashboardWidgets');
-    if (appWidgets.link1 || appWidgets.link2 || appWidgets.salesText) {
-        wContainer.classList.remove('hidden');
-        wContainer.innerHTML = `
-            ${appWidgets.salesText ? `
-            <div class="bg-gradient-to-l from-sky-50 to-emerald-50 border border-sky-100 p-5 rounded-3xl flex items-center gap-3">
-                <i class="fas fa-tags text-sky-500 text-2xl"></i>
-                <div class="text-slate-700 font-bold">${appWidgets.salesText}</div>
-            </div>` : ''}
-            ${(appWidgets.link1 || appWidgets.link2) ? `
-            <div class="flex gap-3">
-                ${appWidgets.link1 ? `<a href="${appWidgets.link1}" target="_blank" class="card-glass flex-1 p-4 rounded-2xl flex items-center gap-3"><i class="fas fa-link text-emerald-500 text-xl"></i><span class="font-bold text-slate-700">مصنع 1</span></a>` : ''}
-                ${appWidgets.link2 ? `<a href="${appWidgets.link2}" target="_blank" class="card-glass flex-1 p-4 rounded-2xl flex items-center gap-3"><i class="fas fa-link text-emerald-500 text-xl"></i><span class="font-bold text-slate-700">مصنع 2</span></a>` : ''}
-            </div>` : ''}
-        `;
-    } else { wContainer.classList.add('hidden'); }
-}
 
 document.getElementById('excelFile').addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -1719,7 +1690,7 @@ function showToast(msg, color = '#059669') {
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-populateCategories(); filterAndRender(); renderWidgets();
+populateCategories(); filterAndRender();
 </script>
 </body>
 </html>
