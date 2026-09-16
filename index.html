@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f1f5f9">
-    <title>نيو فيوتشر | نظام الأصناف</title>
+    <title>نيو فيوتشر بلاست للصناعات البلاستيكة | قائمة اسعار المنتجات </title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- مكتبة الـ QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         body {
@@ -28,28 +30,28 @@
             z-index: -1;
         }
         .glass {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.6);
             box-shadow: 0 4px 20px -8px rgba(148, 163, 184, 0.15);
         }
         .card-glass {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(241, 245, 249, 0.8);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(241, 245, 249, 0.9);
             box-shadow: 0 8px 30px -12px rgba(148, 163, 184, 0.15);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .card-glass:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px -8px rgba(14, 165, 233, 0.2);
-            border-color: rgba(14, 165, 233, 0.2);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 40px -8px rgba(14, 165, 233, 0.25);
+            border-color: rgba(14, 165, 233, 0.3);
         }
         .code-badge { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #ffffff; font-weight: 700; }
         .price-badge { color: #059669; }
-        #reader { width: 100%; border-radius: 16px; overflow: hidden; border: 3px solid #0ea5e9; box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); }
+        #reader { width: 100% !important; border-radius: 16px; overflow: hidden; border: 3px solid #0ea5e9; box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); }
         #reader video { border-radius: 13px; }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -79,6 +81,20 @@
         .social-btn:hover {
             transform: translateY(-3px) scale(1.05);
         }
+        .btn-action {
+            transition: all 0.2s ease;
+        }
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+        /* تنسيق الفأرة على المودال */
+        .modal-content {
+            animation: modalPop 0.3s ease-out forwards;
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -94,13 +110,13 @@
                 <i class="fas fa-cubes text-white"></i>
             </div>
             <div>
-                <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">نيو فيوتشر</h1>
-                <p class="text-xs text-slate-500 font-semibold tracking-wide">New Future - نظام الأصناف الذكي</p>
+                <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">نيو فيوتشر بلاست للصناعات البلاستيكية</h1>
+                <p class="text-xs text-slate-500 font-semibold tracking-wide">New Future - قائمة الاسعار</p>
             </div>
         </div>
         <div class="flex items-center gap-2 w-full md:w-auto">
             <button id="btnScan" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-gradient-to-l from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-sky-500/20 transition-all">
-                <i class="fas fa-qrcode"></i> <span>اسكن الصنف</span>
+                <i class="fas fa-qrcode"></i> <span>اسكان الصنف</span>
             </button>
         </div>
     </div>
@@ -120,14 +136,11 @@
 <!-- المحتوى الرئيسي -->
 <main class="container mx-auto px-4 py-6">
     
-    <!-- ==== بداية روابط السوشيال ميديا (دي بتظهر للناس كلها) ==== -->
-    <!-- إنت بس غير اللينكات اللي جوه علامة التنصيص href="..." -->
+    <!-- ==== بداية روابط السوشيال ميديا ==== -->
     <div class="flex justify-center items-center gap-4 mb-8">
-        <!-- فيسبوك -->
         <a href="https://www.facebook.com/share/19Bf4z7wq4/" target="_blank" class="social-btn w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl text-slate-600 hover:bg-blue-600 hover:text-white shadow-sm border border-slate-100">
             <i class="fab fa-facebook-f"></i>
         </a>
-        <!-- واتساب -->
         <a href="https://wa.me/201144281058" target="_blank" class="social-btn w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl text-slate-600 hover:bg-green-500 hover:text-white shadow-sm border border-slate-100">
             <i class="fab fa-whatsapp"></i>
         </a>
@@ -136,19 +149,19 @@
 
     <div class="text-slate-500 text-sm mb-4">عدد الأصناف المعروضة: <span id="resultCount" class="font-bold text-sky-600">0</span></div>
     <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
-    
-    <!-- تفاصيل الصنف -->
-    <div id="productModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white max-w-md w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100">
-            <button id="closeModal" class="absolute top-5 left-5 text-slate-300 hover:text-slate-700 text-2xl transition-colors"><i class="fas fa-times"></i></button>
-            <div id="modalContent"></div>
-        </div>
-    </div>
 </main>
 
+<!-- تفاصيل الصنف -->
+<div id="productModal" class="fixed inset-0 bg-black/40 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="modal-content bg-white max-w-md w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100 overflow-y-auto max-h-[90vh]">
+        <button id="closeModal" class="absolute top-5 left-5 text-slate-300 hover:text-red-500 text-2xl transition-colors z-10"><i class="fas fa-times-circle"></i></button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
 <!-- السكانر -->
-<div id="scannerSection" class="hidden container mx-auto px-4 mt-6">
-    <div class="max-w-md mx-auto bg-white rounded-3xl p-5 shadow-xl border border-slate-100">
+<div id="scannerModal" class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="modal-content bg-white max-w-md w-full rounded-3xl p-5 shadow-2xl border border-slate-100">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-camera text-sky-500"></i> وجه الكاميرا للباركود</h3>
             <button id="btnCloseScan" class="text-red-500 hover:text-red-400 text-xl"><i class="fas fa-times-circle"></i></button>
@@ -159,7 +172,7 @@
 
 <!-- Admin Login -->
 <div id="adminLoginModal" class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 hidden items-center justify-center p-4">
-    <div class="bg-white max-w-sm w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100">
+    <div class="modal-content bg-white max-w-sm w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100">
         <button id="closeAdminLogin" class="absolute top-5 left-5 text-slate-300 hover:text-slate-700 text-2xl transition-colors"><i class="fas fa-times"></i></button>
         <div class="text-center mb-6">
             <div class="w-16 h-16 mx-auto bg-sky-50 rounded-2xl flex items-center justify-center text-3xl mb-4 text-sky-500">
@@ -175,7 +188,7 @@
 
 <!-- Admin Dashboard -->
 <div id="adminDashboardModal" class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white max-w-lg w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100 my-8">
+    <div class="modal-content bg-white max-w-lg w-full rounded-3xl p-8 relative shadow-2xl border border-slate-100 my-8">
         <button id="closeAdminDashboard" class="absolute top-5 left-5 text-slate-300 hover:text-slate-700 text-2xl transition-colors"><i class="fas fa-times"></i></button>
         <div class="text-center mb-6">
             <div class="w-16 h-16 mx-auto bg-emerald-50 rounded-2xl flex items-center justify-center text-3xl mb-4 text-emerald-500">
@@ -184,7 +197,6 @@
             <h3 class="text-xl font-black text-slate-800">داش بورد التحكم</h3>
         </div>
 
-        <!-- رفع إكسيل وتوليد الكود -->
         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
             <h4 class="font-bold text-slate-700 mb-3">تحديث قائمة الأسعار ونشرها</h4>
             <label class="cursor-pointer flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-sm transition-all mb-4">
@@ -212,763 +224,763 @@ const defaultData = [
         "code": "B770",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 50 مل أبيض 15 جم ق28",
-        "price": "6.5",
+        "price": "7",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B004",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 100 مل أبيض 20 جم ق 40 بأمان",
-        "price": "7.7",
+        "price": "8.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B001",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 100مل أبيض 20جم ق26",
-        "price": "7.7",
+        "price": "8.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B002",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 100مل أبيض 20جم ق26 بخطين",
-        "price": "7.7",
+        "price": "8.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B003",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 100مل أبيض 20جم ق38",
-        "price": "7.7",
+        "price": "8.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B006",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 100مل أبيض 20جم ق45 بأمان",
-        "price": "7.7",
+        "price": "8.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B005",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 100مل أبيض 20جم ق50",
-        "price": "7.7",
+        "price": "8.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B505",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 150مل أبيض 25جم ق50 بأمان",
-        "price": "8.5",
+        "price": "9",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B010",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق38",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B012",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق40 بأمان",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B013",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق43",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B016",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق45 بأمان",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B518",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق46 بأمان وجوان جديد",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - جوان"
     },
     {
         "code": "B020",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق50",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B022",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق50 بأمان",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B034",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق50 بأمان جديد",
-        "price": "10",
+        "price": "10.6",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B037",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 250مل أبيض 35جم ق50 مربع بأمان",
-        "price": "11.25",
+        "price": "11.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B623",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 60جم ق38",
-        "price": "14.25",
+        "price": "14.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B614",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 60جم ق45 بأمان",
-        "price": "14.25",
+        "price": "14.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B609",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 60جم ق46 بأمان وجوان جديد",
-        "price": "14.25",
+        "price": "14.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B608",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 60جم ق50 بأمان",
-        "price": "14.25",
+        "price": "14.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B646",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 60جم ق60 بأمان جديد",
-        "price": "15.75",
+        "price": "16",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B044",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق38",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B207",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق40 بأمان خط بيان مسح",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B050",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق43",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B060",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق45 بأمان",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B512",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق46 بأمان وجوان جديد",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - جوان"
     },
     {
         "code": "B083",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق50",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B065",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق50 بأمان",
-        "price": "14.9",
+        "price": "15.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B085",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 500مل أبيض 65جم ق50 بأمان مربع",
-        "price": "16.25",
+        "price": "16.75",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B621",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 95جم ق46 بأمان وجوان",
-        "price": "19.75",
+        "price": "20.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B727",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 95جم ق46 بأمان وجوان معدل",
-        "price": "21",
+        "price": "21.75",
         "notes": "عبوة - غطاء - رينج"
     },
     {
         "code": "B611",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 95جم ق50 بأمان",
-        "price": "19.75",
+        "price": "20.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B782",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1 لتر أبيض 100 جم ق46 بأمان وجوان",
-        "price": "20.5",
+        "price": "21.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B606",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 100جم ق60 بأمان قصير",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B111",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق38",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B115",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق43",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B185",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق43 خط بيان",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B592",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق45 بأمان",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B238",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق46 بأمان وجوان",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - جوان"
     },
     {
         "code": "B124",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق50 بأمان",
-        "price": "21.5",
+        "price": "22.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B146",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 105جم ق50 بأمان مربع",
-        "price": "22.25",
+        "price": "23.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B118",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 110جم عيار",
-        "price": "22.25",
+        "price": "23.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B120",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 110جم ق45 بأمان",
-        "price": "22.25",
+        "price": "23.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B134",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 110جم ق50 بأمان",
-        "price": "22.25",
+        "price": "23.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B743",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1 لتر أبيض 110 جم ق46 بأمان وجوان",
-        "price": "22.25",
+        "price": "23.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "b173",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 110جم ق60 بأمان جديد",
-        "price": "24",
+        "price": "24.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "b791",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1 لتر أبيض 110 جم ق60 بأمان وجوان جديد",
-        "price": "25.25",
+        "price": "25.75",
         "notes": "عبوة - غطاء - رينج"
     },
     {
         "code": "B135",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 120جم ق50 بأمان",
-        "price": "25",
+        "price": "26",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B247",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 120جم ق50 بأمان جديد",
-        "price": "25",
+        "price": "26",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B165",
         "category": "عبوة بولى ايثلين",
         "name": "عبوة 1لتر أبيض 120جم ق60 بأمان جديد",
-        "price": "26.25",
+        "price": "27.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B423",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 50 مل أبيض 15 جم ق28",
-        "price": "9.8",
+        "price": "10",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B258",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 100مل أبيض 20جم ق50",
-        "price": "12",
+        "price": "12.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B259",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 100مل أبيض 20جم ق45 بأمان",
-        "price": "12",
+        "price": "12.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B257",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 100مل أبيض 20جم ق40 بأمان",
-        "price": "12",
+        "price": "12.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B254",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 100مل أبيض 20جم ق38",
-        "price": "12",
+        "price": "12.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B253",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 100مل أبيض 20جم ق26 بخطين",
-        "price": "12",
+        "price": "12.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B252",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 100مل أبيض 20جم ق26",
-        "price": "12",
+        "price": "12.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B378",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 150مل أبيض 25جم ق 50 بامان",
-        "price": "12.75",
+        "price": "13.25",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B280",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق50 بأمان جديد",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B278",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق50 بأمان",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B275",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق50",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B272",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق45 بأمان",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B268",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق43 خط بيان",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B267",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق43",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B266",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق40 بأمان",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B263",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 250مل أبيض 35جم ق38",
-        "price": "16.6",
+        "price": "17",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B304",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق50 بأمان جديد",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B300",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق50 بأمان",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B306",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق50",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B296",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق45 بأمان",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B293",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق43 مدرج خط بيان",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B290",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق43 خط بيان",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B289",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق43",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B288",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق40 بأمان مدرج",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B287",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق40 بأمان",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B284",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 500مل أبيض 65جم ق38",
-        "price": "23.25",
+        "price": "24",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B307",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 115جم ق38",
-        "price": "38",
+        "price": "39.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B326",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق60 بأمان جديد",
-        "price": "41",
+        "price": "42.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B321",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق50 بأمان جديد",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B317",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق50 بأمان",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B323",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق50",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B314",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق45 بأمان",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B311",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق43 خط بيان",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B310",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق43",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B309",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم ق40 بأمان",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B313",
         "category": "عبوة كواكس",
         "name": "عبوة كواكس 1لتر أبيض 120جم عيار",
-        "price": "40",
+        "price": "41",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B313",
         "category": "عبوه  بولى  مخرز",
         "name": "عبوة 500 مل أبيض 60 جم ق46 بامان وجوان جديد (مخرز)",
-        "price": "10.5",
+        "price": "11.5",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "B828",
         "category": "عبوه  بولى  مخرز",
         "name": "عبوة 1 لتر أبيض 95 جم ق 46 بأمان وجوان (مخرز)",
-        "price": "15.5",
+        "price": "16.5",
         "notes": "عبوة - غطاء - جوان"
     },
     {
         "code": "B840",
         "category": "عبوه  بولى  مخرز",
         "name": "عبوة 1لتر أبيض 95جم ق46 بأمان وجوان معدل(مخرز)",
-        "price": "15.5",
+        "price": "16.5",
         "notes": "عبوة - غطاء - جوان"
     },
     {
         "code": "B313",
         "category": "جركن بولى مخرز",
         "name": "جركن 5 لتر أبيض 250 جم ق46 بأمان وجوان (مخرز)",
-        "price": "28.5",
+        "price": "30",
         "notes": "عبوة - غطاء - طبة"
     },
     {
         "code": "CAN255",
         "category": "جركن كواكس",
         "name": "جركن كواكس 5لتر أبيض 320جم ق60 بأمان C3",
-        "price": "188",
+        "price": "195",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN252",
         "category": "جركن كواكس",
         "name": "جركن كواكس 5لتر أبيض 320جم ق60 بأمان C2",
-        "price": "188",
+        "price": "195",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN257",
         "category": "جركن كواكس",
         "name": "جركن كواكس 5لتر أبيض 350جم ق60 بأمان C2",
-        "price": "198",
+        "price": "205",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN003",
         "category": "جركن بولى ايثلين",
         "name": "جركن 500مل شفاف 70جم ق28",
-        "price": "13.25",
+        "price": "14.25",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN004",
         "category": "جركن بولى ايثلين",
         "name": "جركن 1لتر شفاف 110جم ق28",
-        "price": "23",
+        "price": "24.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN010",
         "category": "جركن بولى ايثلين",
         "name": "جركن 1لتر أبيض 110جم ق38",
-        "price": "23",
+        "price": "24.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "can398",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 200جم ق46 بأمان وجوان",
-        "price": "27",
+        "price": "28.5",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN319",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أصفر 235جم ق.ع بأمان",
-        "price": "36",
+        "price": "37.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN392",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر بيج غامق 235جم ق.ع بأمان",
-        "price": "36",
+        "price": "37.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN315",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 250جم ق46 بأمان وجوان",
-        "price": "38",
+        "price": "39.5",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN320",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 250جم ق.ع بأمان",
-        "price": "38",
+        "price": "39.5",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN361",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 280جم ق60 بأمان وجوان C3",
-        "price": "41",
+        "price": "42.5",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN344",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 280جم ق60 بأمان C3",
-        "price": "41",
+        "price": "42.5",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN067",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 280جم ق60 بأمان C2",
-        "price": "41",
+        "price": "42.5",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN312",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أزرق 300جم ق.ع بأمان ( إزازة )",
-        "price": "33",
+        "price": "34",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN029",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 300جم ق60 بأمان C2",
-        "price": "44",
+        "price": "45.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN047",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 300جم ق60 بأمان C3",
-        "price": "44",
+        "price": "45.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN019",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 300جم ق60 بأمان C1",
-        "price": "47",
+        "price": "49",
         "notes": "جركن - غطاء - طبة"
     },
     {
@@ -989,280 +1001,280 @@ const defaultData = [
         "code": "CAN023",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 400جم ق60 بأمان C1",
-        "price": "58",
+        "price": "61.5",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "can070",
         "category": "جركن بولى ايثلين",
         "name": "جركن 5لتر أبيض 400جم ق60 بأمان C2",
-        "price": "53",
+        "price": "55",
         "notes": "جركن - غطاء - طبة"
     },
     {
         "code": "CAN568",
         "category": "جركن بولى ايثلين",
         "name": "جركن 10 لتر أحمر 440 جم ق.ع بأمان جديد",
-        "price": "56",
+        "price": "59",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN195",
         "category": "جركن بولى ايثلين",
         "name": "جركن 10لتر أبيض 500جم ق.ع بأمان جديد",
-        "price": "68.5",
+        "price": "73",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN103",
         "category": "جركن بولى ايثلين",
         "name": "جركن 10لتر أبيض 550جم ق.ع بأمان",
-        "price": "71.5",
+        "price": "76",
         "notes": "جركن - غطاء - طبة بلاستيك او جوان"
     },
     {
         "code": "CAN102",
         "category": "جركن بولى ايثلين",
         "name": "جركن 10لتر أبيض 600جم ق.ع بأمان",
-        "price": "75",
+        "price": "79",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN108",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر شفاف 700جم ق.ع بأمان",
-        "price": "87",
+        "price": "94",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN109",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر أبيض 800جم ق.ع بأمان",
-        "price": "97",
+        "price": "104",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN135",
         "category": "جركن بولى ايثلين",
         "name": "جركن 18لتر أصفر 850جم ق.ع بأمان",
-        "price": "102",
+        "price": "110",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN142",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أبيض 1000جم ق.ع بأمان",
-        "price": "119",
+        "price": "131",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN138",
         "category": "جركن بولى ايثلين",
         "name": "جركن 18لتر أبيض 1000جم ق.ع بأمان",
-        "price": "119",
+        "price": "131",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN110",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر أبيض 1000جم ق.ع بأمان",
-        "price": "119",
+        "price": "131",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN244",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر أبيض 1000جم جوان بخطين",
-        "price": "119",
+        "price": "131",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN129",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر أبيض 1050جم جوان بخطين",
-        "price": "122",
+        "price": "135",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN213",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25 لتر ابيض 1100 جرام",
-        "price": "133",
+        "price": "143",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN222",
         "category": "جركن بولى ايثلين",
         "name": "جركن 20لتر أزرق 1100جم جوان جديد",
-        "price": "130",
+        "price": "143",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN198",
         "category": "جركن بولى ايثلين",
         "name": "جركن 20لتر أبيض 1100جم جوان جديد",
-        "price": "130",
+        "price": "143",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN208",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر شفاف 1100جم جوان جديد",
-        "price": "130",
+        "price": "143",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN227",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر أخضر فاتح 1100جم جوان بخطين ( إزازة )",
-        "price": "96",
+        "price": "101",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN126",
         "category": "جركن بولى ايثلين",
         "name": "جركن 16لتر أبيض 1100جم جوان بخطين",
-        "price": "130",
+        "price": "143",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN161",
         "category": "جركن بولى ايثلين",
         "name": "جركن 30لتر كحلى 1200جم جوان",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN210",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر كحلى 1200جم جوان جديد",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN199",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر شفاف 1200جم جوان جديد",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN150",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر شفاف 1200جم جوان بخطين",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN536",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أزرق غامق 1200جم جوان جديد ( إزازة )",
-        "price": "100",
+        "price": "106",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN192",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أبيض 1200جم ق.ع بأمان",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - طبة بلاستيك"
     },
     {
         "code": "CAN209",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أبيض 1200جم جوان جديد",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN148",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أبيض 1200جم جوان بخطين",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN203",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أزرق 1200جم جوان جديد",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN162",
         "category": "جركن بولى ايثلين",
         "name": "جركن 30لتر أزرق 1200جم جوان",
-        "price": "141",
+        "price": "154",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN591",
         "category": "جركن بولى ايثلين",
         "name": "جركن 30 لتر أزرق 1250 جم جوان",
-        "price": "150",
+        "price": "166",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN511",
         "category": "جركن بولى ايثلين",
         "name": "جركن 30لتر أزرق 1300جم جوان",
-        "price": "155",
+        "price": "172",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN539",
         "category": "جركن بولى ايثلين",
         "name": "جركن 30لتر أزرق 1400جم جوان",
-        "price": "170",
+        "price": "180",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "can538",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25لتر أبيض 1500جم جوان جديد",
-        "price": "178",
+        "price": "190",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "CAN577",
         "category": "جركن بولى ايثلين",
         "name": "جركن 25 لتر شفاف 1700 جم جوان جديد",
-        "price": "190",
+        "price": "208",
         "notes": "جركن - غطاء - جوان"
     },
     {
         "code": "J016",
         "category": "برطمان بولى ايثلين",
         "name": "برطمان 1/4ك بودر أبيض 40جم جديد",
-        "price": "14.5",
+        "price": "15.5",
         "notes": "برطمان - غطاء"
     },
     {
         "code": "J017",
         "category": "برطمان بولى ايثلين",
         "name": "برطمان 1/2ك بودر أبيض 60جم جديد",
-        "price": "18",
+        "price": "19.5",
         "notes": "برطمان - غطاء"
     },
     {
         "code": "J018",
         "category": "برطمان بولى ايثلين",
         "name": "برطمان 1ك بودر أبيض 80جم جديد",
-        "price": "19",
+        "price": "20.5",
         "notes": "برطمان - غطاء"
     },
     {
         "code": "J022",
         "category": "برطمان بولى ايثلين",
         "name": "برطمان 1ك بودر أبيض 90جم بخطين",
-        "price": "25.5",
+        "price": "27.5",
         "notes": "برطمان - غطاء - طبة"
     },
     {
         "code": "j023",
         "category": "برطمان بولى ايثلين",
         "name": "برطمان 2ك بودر أبيض 130جم بخطين",
-        "price": "30",
+        "price": "33",
         "notes": "برطمان - غطاء - طبة"
     },
     {
@@ -1346,161 +1358,161 @@ const defaultData = [
         "code": "C002",
         "category": "غطاء",
         "name": "غطاء ق26 أبيض",
-        "price": "1",
+        "price": "1.05",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C006",
         "category": "غطاء",
         "name": "غطاء ق28 أبيض",
-        "price": "1.3",
+        "price": "1.35",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C015",
         "category": "غطاء",
         "name": "غطاء ق38 أبيض",
-        "price": "1.85",
+        "price": "2",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C029",
         "category": "غطاء",
         "name": "غطاء ق40 بأمان أبيض",
-        "price": "2.15",
+        "price": "2.3",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C032",
         "category": "غطاء",
         "name": "غطاء ق43 أبيض",
-        "price": "2.3",
+        "price": "2.45",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C057",
         "category": "غطاء",
         "name": "غطاء عيار أبيض",
-        "price": "3.9",
+        "price": "4.2",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C072",
         "category": "غطاء",
         "name": "غطاء ق50 أبيض",
-        "price": "2.7",
+        "price": "2.9",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C089",
         "category": "غطاء",
         "name": "غطاء ق60 بأمان أبيض",
-        "price": "5.25",
+        "price": "5.5",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C176",
         "category": "غطاء",
         "name": "غطاء ق45 بأمان معدل أبيض",
-        "price": "2.4",
+        "price": "2.6",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C203",
         "category": "غطاء",
         "name": "غطاء ق46 بأمان وجوان أبيض",
-        "price": "3.3",
+        "price": "3.5",
         "notes": "غطاء + جوان"
     },
     {
         "code": "C221",
         "category": "غطاء",
         "name": "غطاء ق46 بأمان أبيض",
-        "price": "3.3",
+        "price": "3",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C271",
         "category": "غطاء",
         "name": "غطاء ق46 بجوان وامان جديد أبيض",
-        "price": "4.3",
-        "notes": "غطاء + جوان + رينج"
+        "price": "3.2",
+        "notes": "غطاء + جوان"
     },
     {
         "code": "C228",
         "category": "غطاء",
         "name": "غطاء بجوان وأمان أبيض",
-        "price": "6",
+        "price": "6.5",
         "notes": "غطاء + جوان"
     },
     {
         "code": "C238",
         "category": "غطاء",
         "name": "غطاء ق60 بأمان وجوان أبيض",
-        "price": "4.4",
+        "price": "4.75",
         "notes": "غطاء + جوان"
     },
     {
         "code": "C289",
         "category": "غطاء",
         "name": "غطاء ق60 بأمان أبيض جديد",
-        "price": "5.5",
-        "notes": "غطاء + طبة + رينج"
+        "price": "4.5",
+        "notes": "غطاء + طبة"
     },
     {
         "code": "C171",
         "category": "غطاء",
         "name": "غطاء ق44 معدل أبيض",
-        "price": "2.4",
+        "price": "2.6",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C046",
         "category": "غطاء",
         "name": "غطاء ق44 أبيض",
-        "price": "2.4",
+        "price": "2.6",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C113",
         "category": "غطاء",
         "name": "غطاء ق.ع بأمان أبيض",
-        "price": "4",
+        "price": "4.25",
         "notes": "غطاء + طبة  بلاستيك"
     },
     {
         "code": "C259",
         "category": "غطاء",
         "name": "غطاء أبيض ق -ع بأمان وجوان",
-        "price": "4",
+        "price": "4.4",
         "notes": "غطاء + جوان"
     },
     {
         "code": "C138",
         "category": "غطاء",
         "name": "غطاء بودر كبير أبيض",
-        "price": "9.25",
+        "price": "10",
         "notes": "غطاء + طبة"
     },
     {
         "code": "C208",
         "category": "غطاء",
         "name": "غطاء بودر جديد أبيض",
-        "price": "7.25",
+        "price": "7.5",
         "notes": "غطاء + طبة"
     },
     {
         "code": "R001",
         "category": "رينج",
         "name": "رينج",
-        "price": "1.3",
+        "price": "1.4",
         "notes": "رينج فقط"
     },
     {
         "code": "plug002",
         "category": "طبة",
         "name": "طبة جركن ق.ع شفاف",
-        "price": "1.3",
+        "price": "1.4",
         "notes": "طبة فقط"
     }
 ];
@@ -1515,6 +1527,18 @@ const toast = document.getElementById('toast');
 
 function openModal(id) { const el = document.getElementById(id); el.classList.remove('hidden'); el.classList.add('flex'); }
 function closeModal(id) { const el = document.getElementById(id); el.classList.add('hidden'); el.classList.remove('flex'); }
+
+// Logic for deep linking (PL)
+function checkUrlForProduct() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+        const found = appData.find(p => p.code.toLowerCase() === code.toLowerCase());
+        if (found) {
+            setTimeout(() => showProductModal(found), 500); // small delay to ensure UI is ready
+        }
+    }
+}
 
 const logoBtn = document.getElementById('logoBtn');
 let tapCount = 0; let tapTimer;
@@ -1541,7 +1565,6 @@ document.getElementById('btnAdminLogin').addEventListener('click', () => {
 
 document.getElementById('closeAdminDashboard').addEventListener('click', () => closeModal('adminDashboardModal'));
 
-// توليد كود التحديث للنشر على GitHub
 document.getElementById('btnExportCode').addEventListener('click', () => {
     const codeArea = document.getElementById('exportCodeArea');
     const codeString = `const defaultData = ${JSON.stringify(appData, null, 4)};`;
@@ -1645,6 +1668,35 @@ function renderProducts(data) {
 searchInput.addEventListener('input', filterAndRender);
 categoryFilter.addEventListener('change', filterAndRender);
 
+// Copy Barcode Feature
+function copyBarcode(code) {
+    navigator.clipboard.writeText(code).then(() => {
+        showToast('اتنسخ الباركود يا صاحبي! 📋');
+    }).catch(() => {
+        showToast('مينفعش أنسخ يا صاحبي', '#ef4444');
+    });
+}
+
+// Generate QR Code Feature for Product Link
+function generateQRCode(code) {
+    const qrContainer = document.getElementById('qrcode');
+    qrContainer.innerHTML = ''; // Clear previous QR
+    
+    const currentUrl = window.location.origin + window.location.pathname;
+    const productUrl = `${currentUrl}?code=${code}`;
+    
+    new QRCode(qrContainer, {
+        text: productUrl,
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    
+    document.getElementById('qrLinkContainer').classList.remove('hidden');
+}
+
 function showProductModal(p) {
     document.getElementById('modalContent').innerHTML = `
         <div class="text-center">
@@ -1658,6 +1710,20 @@ function showProductModal(p) {
                 <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">الملاحظات</span><span class="text-slate-700">${p.notes}</span></div>
                 <div class="flex justify-between items-center pt-2"><span class="text-slate-500 text-lg">السعر</span><span class="price-badge text-3xl font-black">${p.price} ج.م</span></div>
             </div>
+            
+            <div class="mt-5 grid grid-cols-2 gap-3">
+                <button onclick="copyBarcode('${p.code}')" class="btn-action w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all">
+                    <i class="fas fa-copy"></i> نسخ الباركود
+                </button>
+                <button onclick="generateQRCode('${p.code}')" class="btn-action w-full bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all">
+                    <i class="fas fa-qrcode"></i> توليد QR Code
+                </button>
+            </div>
+
+            <div id="qrLinkContainer" class="hidden mt-6 p-4 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center">
+                <p class="text-slate-500 text-sm mb-3 font-bold">اعمل سكان للـ QR ده من الموبايل وهيوديك للينك الصنف أوتوماتيك!</p>
+                <div id="qrcode" class="p-2 bg-white rounded-xl shadow-md"></div>
+            </div>
         </div>`;
     openModal('productModal');
 }
@@ -1665,31 +1731,82 @@ function showProductModal(p) {
 document.getElementById('closeModal').addEventListener('click', () => closeModal('productModal'));
 document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') closeModal('productModal'); });
 
-const scannerSection = document.getElementById('scannerSection');
-document.getElementById('btnScan').addEventListener('click', () => { scannerSection.classList.remove('hidden'); startScanner(); });
-document.getElementById('btnCloseScan').addEventListener('click', () => { scannerSection.classList.add('hidden'); stopScanner(); });
+// Scanner Modal Logic
+const scannerModal = document.getElementById('scannerModal');
+document.getElementById('btnScan').addEventListener('click', () => { 
+    openModal('scannerModal'); 
+    // Wait for modal to render in DOM before starting scanner
+    setTimeout(() => startScanner(), 300); 
+});
+
+document.getElementById('btnCloseScan').addEventListener('click', () => { 
+    stopScanner(); 
+    closeModal('scannerModal'); 
+});
 
 function startScanner() {
     html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 150 } };
-    html5QrCode.start({ facingMode: "environment" }, config, 
-        (decodedText) => {
-            stopScanner(); scannerSection.classList.add('hidden'); searchInput.value = decodedText;
-            const found = appData.find(p => p.code.toLowerCase() === decodedText.toLowerCase());
-            if (found) {
-                categoryFilter.value = 'all'; filterAndRender(); showProductModal(found); showToast('تم العثور على الصنف! 🎯');
-            } else { showToast(`مفيش صنف بالكود ده: ${decodedText}`, '#ef4444'); filterAndRender(); }
-        }, (errorMessage) => {}
-    ).catch(err => { showToast('الكاميرا مش شغالة', '#ef4444'); });
+    const config = { fps: 10, qrbox: { width: 250, height: 150 }, rememberLastUsedCamera: true };
+    
+    Html5Qrcode.getCameras().then(cameras => {
+        if (cameras && cameras.length) {
+            // Prefer back camera
+            let cameraId = cameras[cameras.length - 1].id; 
+            // Sometimes environment is explicitly needed
+            const envCamera = cameras.find(c => c.name.toLowerCase().includes('back') || c.name.toLowerCase().includes('environment'));
+            if (envCamera) cameraId = envCamera.id;
+
+            html5QrCode.start(
+                { deviceId: { exact: cameraId } }, 
+                config, 
+                (decodedText) => {
+                    stopScanner();
+                    closeModal('scannerModal');
+                    searchInput.value = decodedText;
+                    const found = appData.find(p => p.code.toLowerCase() === decodedText.toLowerCase());
+                    if (found) {
+                        categoryFilter.value = 'all'; 
+                        filterAndRender(); 
+                        showProductModal(found); 
+                        showToast('تم العثور على الصنف! 🎯');
+                    } else { 
+                        showToast(`مفيش صنف بالكود ده: ${decodedText}`, '#ef4444'); 
+                        filterAndRender(); 
+                    }
+                }, 
+                (errorMessage) => {}
+            ).catch(err => {
+                console.error("Scan Error:", err);
+                showToast('مفيش كاميرا أو السماحية مفعلةش!', '#ef4444');
+            });
+        } else {
+            showToast('مفيش كاميرا متاحة على الجهاز ده!', '#ef4444');
+        }
+    }).catch(err => {
+        console.error("Camera fetch Error:", err);
+        showToast('مينفعش أوصّل للكاميرا، اتأكد من السماحيات!', '#ef4444');
+    });
 }
-function stopScanner() { if (html5QrCode && html5QrCode.isRunning) { html5QrCode.stop().then(() => html5QrCode.clear()).catch(err => console.error(err)); } }
+
+function stopScanner() { 
+    if (html5QrCode && html5QrCode.isRunning) { 
+        html5QrCode.stop().then(() => {
+            html5QrCode.clear();
+        }).catch(err => console.error("Stop Error:", err)); 
+    } 
+}
 
 function showToast(msg, color = '#059669') {
-    toast.textContent = msg; toast.style.backgroundColor = color; toast.style.display = 'block';
+    toast.textContent = msg; 
+    toast.style.backgroundColor = color; 
+    toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-populateCategories(); filterAndRender();
+// Initialize App
+populateCategories(); 
+filterAndRender();
+checkUrlForProduct(); // Check if link has a product code (?code=xxx)
 </script>
 </body>
 </html>
